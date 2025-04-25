@@ -1,0 +1,63 @@
+.app {
+  min-height: 100vh;
+  background-color: #111214;
+  padding: 20px;
+}
+
+:root {
+  --primary-gradient: linear-gradient(135deg, #4f46e5, #6366f1);
+  --primary-gradient-hover: linear-gradient(135deg, #4338ca, #4f46e5);
+  --accent-color: #4f46e5;
+  --accent-light: #6366f1;
+  --text-primary: #ffffff;
+  --text-secondary: #9ca3af;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+::selection {
+  background-color: rgba(79, 70, 229, 0.2);
+  color: #fff;
+}
+
+button {
+  background: var(--primary-gradient);
+  color: var(--text-primary);
+  border: none;
+  padding: 8px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background: var(--primary-gradient-hover);
+}
+
+.graph-node {
+  border: 2px solid var(--accent-color);
+  color: var(--text-primary);
+}
+
+.graph-edge {
+  background: var(--primary-gradient);
+}
+
+.edit-mode-toggle {
+  background: var(--primary-gradient);
+  color: var(--text-primary);
+}
+
+.edit-mode-toggle:hover {
+  background: var(--primary-gradient-hover);
+}
+
+.edit-mode-toggle.active {
+  background: transparent;
+  border: 2px solid var(--accent-color);
+} 

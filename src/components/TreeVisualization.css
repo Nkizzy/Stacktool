@@ -1,0 +1,524 @@
+:root {
+  --bg-gradient-dark: linear-gradient(135deg, #1e1b4b 0%, #1e1e2d 100%);
+  --bg-gradient-card: linear-gradient(135deg, #2d2a5d 0%, #2d2d3f 100%);
+  --bg-gradient-button: linear-gradient(135deg, #4f46e5, #6366f1);
+  --bg-gradient-button-hover: linear-gradient(135deg, #4338ca, #4f46e5);
+  --text-primary: #ffffff;
+  --text-secondary: #9ca3af;
+  --border-color: rgba(79, 70, 229, 0.2);
+  --node-color: #4f46e5;
+  --node-hover: rgba(79, 70, 229, 0.2);
+  --primary-gradient: linear-gradient(135deg, #4f46e5, #6366f1);
+  --primary-gradient-hover: linear-gradient(135deg, #4338ca, #4f46e5);
+  --accent-color: #4f46e5;
+}
+
+body {
+  background: var(--bg-gradient-dark);
+  color: var(--text-primary);
+}
+
+.color-option {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  opacity: 1 !important;
+}
+
+.color-option.active {
+  border: 2px solid white;
+  box-shadow: 0 0 0 2px #6366f1;
+}
+
+.color-option.red {
+  background: linear-gradient(135deg, #f87171, #ef4444);
+}
+
+.color-option.yellow {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+}
+
+.color-option.green {
+  background: linear-gradient(135deg, #34d399, #10b981);
+}
+
+.tree-panel {
+  background: var(--bg-gradient-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.tree-title {
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.tree-title svg {
+  color: var(--node-color);
+}
+
+.tree-description {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.edit-mode-hint {
+  color: #818cf8;
+  font-style: italic;
+}
+
+.graph-container {
+  position: relative;
+  height: 400px;
+  background-color: #1a1b1e;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+.graph-container.edit-mode {
+  background-color: #1f2937;
+}
+
+.graph-edge {
+  position: absolute;
+  height: 2px;
+  background: var(--primary-gradient) !important;
+  background-image: var(--primary-gradient) !important;
+  transform-origin: left center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  z-index: 1;
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
+}
+
+.graph-edge:hover {
+  height: 4px;
+  background: var(--primary-gradient-hover) !important;
+  background-image: var(--primary-gradient-hover) !important;
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.6);
+}
+
+.graph-edge.checked {
+  background: #64748b !important;
+  background-image: none !important;
+  opacity: 0.7;
+  box-shadow: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.graph-edge.checked:hover {
+  background: #94a3b8 !important;
+  background-image: none !important;
+  box-shadow: none;
+  opacity: 0.9;
+  height: 4px;
+}
+
+.graph-container.edit-mode .graph-edge {
+  height: 4px;
+  pointer-events: auto !important;
+}
+
+.graph-node {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: #1a1b1e !important;
+  border: 2px solid var(--accent-color);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease, z-index 0s;
+  z-index: 2;
+  box-shadow: inset 0 0 15px rgba(79, 70, 229, 0.2);
+}
+
+.graph-container.edit-mode .graph-node {
+  background: #1a1b1e !important;
+}
+
+.graph-node:hover {
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2),
+              inset 0 0 20px rgba(79, 70, 229, 0.3);
+  transform: translate(-50%, -50%) scale(1.05);
+  background: inherit !important;
+  z-index: 9999 !important;
+}
+
+/* Ensure the node's background and border are also elevated */
+.graph-node:hover::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: inherit;
+  border-radius: inherit;
+  z-index: -1;
+}
+
+.graph-node.dragging {
+  z-index: 3;
+}
+
+.graph-node.checked {
+  background: #2a2a3a !important;
+  color: #94a3b8;
+  border-color: #94a3b8;
+  box-shadow: inset 0 0 15px rgba(148, 163, 184, 0.2);
+  opacity: 1 !important;
+}
+
+.graph-node.checked * {
+  opacity: 1 !important;
+}
+
+.graph-node.highlighted-red {
+  background: #2a1f1f !important;
+  color: #ef4444;
+  border-color: #ef4444;
+  box-shadow: inset 0 0 15px rgba(239, 68, 68, 0.2);
+}
+
+.graph-node.highlighted-yellow {
+  background: #2a2416 !important;
+  color: #f59e0b;
+  border-color: #f59e0b;
+  box-shadow: inset 0 0 15px rgba(245, 158, 11, 0.2);
+}
+
+.graph-node.highlighted-green {
+  background: #1a2a20 !important;
+  color: #10b981;
+  border-color: #10b981;
+  box-shadow: inset 0 0 15px rgba(16, 185, 129, 0.2);
+}
+
+/* Combined states for checked + highlighted */
+.graph-node.checked.highlighted-red {
+  background: #3a1f1f !important;
+  color: rgba(239, 68, 68, 0.6);
+  border-color: rgba(239, 68, 68, 0.6);
+  box-shadow: inset 0 0 15px rgba(239, 68, 68, 0.2);
+}
+
+.graph-node.checked.highlighted-yellow {
+  background: #3a2416 !important;
+  color: rgba(245, 158, 11, 0.6);
+  border-color: rgba(245, 158, 11, 0.6);
+  box-shadow: inset 0 0 15px rgba(245, 158, 11, 0.2);
+}
+
+.graph-node.checked.highlighted-green {
+  background: #1a3a20 !important;
+  color: rgba(16, 185, 129, 0.6);
+  border-color: rgba(16, 185, 129, 0.6);
+  box-shadow: inset 0 0 15px rgba(16, 185, 129, 0.2);
+}
+
+.graph-node:hover.highlighted-red {
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2),
+              inset 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
+.graph-node:hover.highlighted-yellow {
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2),
+              inset 0 0 20px rgba(245, 158, 11, 0.3);
+}
+
+.graph-node:hover.highlighted-green {
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2),
+              inset 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.edit-mode-toggle {
+  background: var(--primary-gradient);
+  color: var(--text-primary);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 16px;
+  display: block;
+}
+
+.edit-mode-toggle:hover {
+  background: var(--primary-gradient-hover);
+}
+
+.edit-mode-toggle.active {
+  background: transparent;
+  color: var(--text-primary);
+  border: 2px solid var(--accent-color);
+}
+
+.edit-mode-toggle.active:hover {
+  border-color: #6366f1;
+}
+
+.node-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a1b1e !important;
+  border: 2px solid #4f46e5;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 8px;
+  box-shadow: 0 4px 20px rgb(0, 0, 0);
+  display: none;
+  z-index: inherit;
+  opacity: 1 !important;
+  pointer-events: auto;
+}
+
+.graph-node:hover .node-menu {
+  display: block;
+  opacity: 1 !important;
+}
+
+.menu-title {
+  color: #4338ca;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  background: #1a1b1e !important;
+  opacity: 1 !important;
+}
+
+.color-options {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  background: #1a1b1e !important;
+  padding: 4px;
+  border-radius: 4px;
+  opacity: 1 !important;
+}
+
+.color-option {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  opacity: 1 !important;
+}
+
+.color-option.red {
+  background: #ef4444 !important;
+  opacity: 1 !important;
+}
+
+.color-option.yellow {
+  background: #f59e0b !important;
+  opacity: 1 !important;
+}
+
+.color-option.green {
+  background: #10b981 !important;
+  opacity: 1 !important;
+}
+
+.color-option.active {
+  border: 2px solid white;
+  box-shadow: 0 0 0 2px #6366f1;
+  opacity: 1 !important;
+}
+
+.menu-button {
+  background: #4f46e5 !important;
+  color: white !important;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  opacity: 1 !important;
+}
+
+.menu-button:hover {
+  background: #4338ca !important;
+  opacity: 1 !important;
+}
+
+/* Override any possible transparency */
+.graph-node.checked .node-menu,
+.graph-node.highlighted-red .node-menu,
+.graph-node.highlighted-yellow .node-menu,
+.graph-node.highlighted-green .node-menu,
+.graph-node:hover .node-menu {
+  background: #1a1b1e !important;
+  opacity: 1 !important;
+}
+
+/* Force all menu elements to be opaque */
+.node-menu,
+.node-menu *,
+.node-menu *::before,
+.node-menu *::after {
+  opacity: 1 !important;
+  background-color: #1a1b1e !important;
+}
+
+/* Ensure menu stays opaque in all node states */
+.graph-node.checked .node-menu,
+.graph-node.checked .menu-title,
+.graph-node.checked .color-options,
+.graph-node.checked .color-option,
+.graph-node.checked .menu-button,
+.graph-node.checked .node-menu * {
+  opacity: 1 !important;
+}
+
+.grid-snap-toggle {
+  position: absolute;
+  top: -30px;
+  right: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.grid-snap-toggle span {
+  color: #9ca3af;
+  margin-right: 12px;
+}
+
+.grid-snap-toggle input[type="checkbox"] {
+  display: none;
+}
+
+.graph-container + div .toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+
+.graph-container + div .toggle-switch input {
+  display: none;
+}
+
+.graph-container + div .toggle-slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #e5e7eb;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.graph-container + div .toggle-slider:before {
+  content: "";
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+input:checked + .toggle-slider {
+  background-color: #14b8a6;
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(16px);
+}
+
+input[type="text"] {
+  background: var(--bg-gradient-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 8px 16px;
+  border-radius: 6px;
+}
+
+input[type="text"]::placeholder {
+  color: var(--text-secondary);
+}
+
+.stack-base {
+  background: var(--bg-gradient-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 12px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+button {
+  background: var(--bg-gradient-button);
+  color: var(--text-primary);
+  border: none;
+  padding: 8px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background: var(--bg-gradient-button-hover);
+}
+
+.new-node-template {
+  display: inline-flex;
+  font-size: 24px;
+  background: #1a1b1e !important;
+  transition: transform 0.2s ease;
+  margin-left: 20px;
+  z-index: 2;
+}
+
+.new-node-template:hover {
+  transform: scale(1.1) !important;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2);
+}
+
+.new-node-template:active {
+  transform: scale(0.95) !important;
+  cursor: grabbing;
+}
+
+.branch-preview {
+  z-index: 1 !important;
+} 
